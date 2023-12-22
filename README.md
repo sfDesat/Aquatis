@@ -1,5 +1,6 @@
 # Aquatis
 Planet surface consists of mainly water.  
+
 ![Screenshot_1](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/1.jpg "1")  
 
 Danger levels are minimal.  
