@@ -6,8 +6,6 @@ Planet surface consists of mainly water.
 Danger levels are minimal.  
 
 # Known Bugs
-- Sun is purple and stationary in the sky
-- Droppod is currently no working
 - The game occasionally crashes when dying
 - RickArg-Helmet_Cameras causes an instant crash
 
