@@ -10,6 +10,6 @@ Danger levels are minimal.
 - The game occasionally crashes when dying
 
 **This mods is still a work in progress, stay tuned for updates**  
-_If you want to give feedback, please open a new issue on my [github page](https://github.com/sfDesat/Aquatis/issues)._  
+_If you want to give feedback, you can use my [github](https://github.com/sfDesat/Aquatis/issues) or [discord](https://discordapp.com/channels/1169792572382773318/1188025007759179857)._  
 
 **Check out my other planet [Orion](https://thunderstore.io/c/lethal-company/p/sfDesat/Orion/)!**
