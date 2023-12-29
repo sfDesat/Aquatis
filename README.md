@@ -1,8 +1,8 @@
-# Aquatis
+# Aquatis Status Report
 ![Screenshot_2](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/2.png "2")  
 _The beached ship (photo taken by Drone-02)_
 
-## **Aquatis Scrap Retrieval Report**
+## **Aquatis Scrap Retrieval Program**
 
 **Objective:** Secure valuable scraps from the bunker complex on Aquatis.
 
