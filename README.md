@@ -1,5 +1,5 @@
 # Aquatis
-![Screenshot_2](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/2.jpg "2")  
+![Screenshot_2](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/2.png "2")  
 _The beached ship (photo taken by Drone-02)_
 
 ## **Aquatis Scrap Retrieval Report**
