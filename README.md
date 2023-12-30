@@ -35,3 +35,4 @@ _If you want to give feedback, you can use my [github page](https://github.com/s
 **Check out my other planet [Orion](https://thunderstore.io/c/lethal-company/p/sfDesat/Orion/) or download the [modpack](https://thunderstore.io/c/lethal-company/p/sfDesat/Explorations/).**
 #
 ### Want to support me? [Buy me a coffee ❤️](https://www.buymeacoffee.com/sfdesat).
+### Want to create your own moon? [Tutorials are here](https://www.buymeacoffee.com/sfdesat/posts).
