@@ -30,6 +30,7 @@ Aquatis presents a significantly less hazardous environment compared to other co
 
 #
 
+The internal name is '112 Aquatis' (for modded interiors).
 _If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Aquatis/issues) or [discord thread](https://discordapp.com/channels/1169792572382773318/1188025007759179857)._  
 
 **Check out my other planet [Orion](https://thunderstore.io/c/lethal-company/p/sfDesat/Orion/) or download the [modpack](https://thunderstore.io/c/lethal-company/p/sfDesat/Explorations/).**
