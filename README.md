@@ -1,5 +1,5 @@
 # Aquatis Status Report
-![Screenshot_2](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/2.png "2")  
+![Screenshot_2](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/4.png "4")  
 _The beached ship (photo taken by Drone-2)_
 
 ## **Aquatis Scrap Retrieval Program**
@@ -28,10 +28,9 @@ Aquatis presents a significantly less hazardous environment compared to other co
 
 **End of Report**
 
-#
+# 
 
-The internal name is '112 Aquatis' (for modded interiors, enable LethalExpansionCore for compatibilty).  
-_If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Aquatis/issues) or join the [discord server](https://discord.gg/UVJx7F8mJY)._
+_If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Aquatis/issues) or join the [discord server](https://discord.gg/lcmod) and search for `sfDesat`._
 
 **Check out my other planets [here](https://thunderstore.io/c/lethal-company/p/sfDesat/) or download my [modpacks](https://thunderstore.io/c/lethal-company/p/sfDesat/?section=modpacks).**
 #
