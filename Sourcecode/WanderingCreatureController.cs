@@ -4,8 +4,6 @@ using UnityEngine.AI;
 public class WanderingCreatureController : MonoBehaviour
 {
     [Header("Movement")]
-    [Tooltip("When enabled, the creature will only wander around its spawn point within a radius defined by the Wander Radius. If disabled, the creature can wander from any point within the Wander Radius.")]
-    public bool anchoredWandering = true;
     [Tooltip("The maximum distance from the creature's current position within which it can wander.")]
     public float wanderRadius = 10f;
     [Tooltip("The duration the creature waits at its destination before selecting a new destination to wander towards.")]
@@ -14,6 +12,8 @@ public class WanderingCreatureController : MonoBehaviour
     public bool randomTime = false;
     [Tooltip("Toggle whether the creature is allowed to wander or not.")]
     public bool wanderEnabled = true;
+    [Tooltip("When enabled, the creature will only wander around its spawn point within a radius defined by the Wander Radius. If disabled, the creature can wander from any point within the Wander Radius.")]
+    public bool anchoredWandering = true;
 
     [Header("Audio")]
     [Tooltip("An array of audio clips that can be played randomly at intervals while the creature is wandering.")]
@@ -27,6 +27,12 @@ public class WanderingCreatureController : MonoBehaviour
     public AudioClip[] walkingAudioClips;
     [Tooltip("The interval between playing walking audio clips.")]
     public float walkingAudioInterval = 0.5f;
+
+    [Header("Rotation")]
+    [Tooltip("If enabled, the creature will follow the surface normal underneath it.")]
+    public bool followSurface = false;
+    [Tooltip("The distance to cast the ray to detect the surface normal.")]
+    public float surfaceNormalRaycastDistance = 1f;
 
     private NavMeshAgent agent;
     private bool isMoving = false;
@@ -100,6 +106,12 @@ public class WanderingCreatureController : MonoBehaviour
                 walkingAudioTimer = walkingAudioInterval;
             }
         }
+
+        // Rotate to follow surface normal
+        if (followSurface)
+        {
+            RotateToFollowSurfaceNormal();
+        }
     }
 
     void SetNewDestination()
@@ -129,6 +141,15 @@ public class WanderingCreatureController : MonoBehaviour
     {
         int randomIndex = Random.Range(0, walkingAudioClips.Length);
         AudioSource.PlayClipAtPoint(walkingAudioClips[randomIndex], transform.position);
+    }
+
+    void RotateToFollowSurfaceNormal()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, surfaceNormalRaycastDistance))
+        {
+            transform.up = hit.normal;
+        }
     }
 
     void OnDrawGizmosSelected()
