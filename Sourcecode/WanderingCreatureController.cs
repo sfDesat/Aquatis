@@ -1,7 +1,9 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
-public class WanderingCreatureController : MonoBehaviour
+public class WanderingCreatureController : NetworkBehaviour
 {
     [Header("Movement")]
     [Tooltip("The maximum distance from the creature's current position within which it can wander.")]
@@ -36,6 +38,7 @@ public class WanderingCreatureController : MonoBehaviour
 
     private NavMeshAgent agent;
     private bool isMoving = false;
+    private bool startMovingSignal = false;
     private float waitTimer = 0f;
     private float ambientAudioTimer = 0f;
     private float walkingAudioTimer = 0f;
@@ -43,13 +46,25 @@ public class WanderingCreatureController : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        SetNewDestination();
+
+        if (IsServer)
+        {
+            GenerateDestination();
+            startMovingSignal = true; // Signal to start moving on the server
+        }
     }
 
     void Update()
     {
         if (!wanderEnabled)
             return;
+
+        // If startMovingSignal is true and the timer has expired, start moving
+        if (startMovingSignal && !isMoving && waitTimer <= 0f)
+        {
+            GenerateDestinationServerRpc();
+            startMovingSignal = false; // Reset the flag
+        }
 
         // Movement logic
         if (isMoving)
@@ -62,7 +77,7 @@ public class WanderingCreatureController : MonoBehaviour
                     isMoving = false;
                     if (randomTime)
                     {
-                        waitTimer = Random.Range(0f, waitTime);
+                        waitTimer = Random.Range(0, waitTime);
                     }
                     else
                     {
@@ -81,7 +96,10 @@ public class WanderingCreatureController : MonoBehaviour
             else
             {
                 // If wait time is over, set new destination
-                SetNewDestination();
+                if (IsServer)
+                {
+                    GenerateDestinationServerRpc();
+                }
             }
         }
 
@@ -91,7 +109,9 @@ public class WanderingCreatureController : MonoBehaviour
             ambientAudioTimer -= Time.deltaTime;
             if (ambientAudioTimer <= 0f)
             {
-                PlayRandomAmbientAudioClip();
+                int randomIndex = Random.Range(0, ambientAudioClips.Length);
+                AudioSource.PlayClipAtPoint(ambientAudioClips[randomIndex], transform.position);
+
                 ambientAudioTimer = Random.Range(minAmbientAudioInterval, maxAmbientAudioInterval);
             }
         }
@@ -102,7 +122,9 @@ public class WanderingCreatureController : MonoBehaviour
             walkingAudioTimer -= Time.deltaTime;
             if (walkingAudioTimer <= 0f)
             {
-                PlayRandomWalkingAudioClip();
+                int randomIndex = Random.Range(0, walkingAudioClips.Length);
+                AudioSource.PlayClipAtPoint(walkingAudioClips[randomIndex], transform.position);
+
                 walkingAudioTimer = walkingAudioInterval;
             }
         }
@@ -114,33 +136,23 @@ public class WanderingCreatureController : MonoBehaviour
         }
     }
 
-    void SetNewDestination()
+    void GenerateDestination()
     {
-        // Get a random point within the wander radius
+        // Generate random direction within the wander radius
         Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
+
         if (anchoredWandering)
         {
             randomDirection += transform.position;
         }
+
         NavMeshHit hit;
-        NavMesh.SamplePosition(randomDirection, out hit, wanderRadius, 1);
-        Vector3 finalPosition = hit.position;
+        NavMesh.SamplePosition(randomDirection, out hit, wanderRadius, NavMesh.AllAreas);
+        Vector3 newDestination = hit.position;
 
         // Set agent's destination
-        agent.SetDestination(finalPosition);
+        agent.SetDestination(newDestination);
         isMoving = true;
-    }
-
-    void PlayRandomAmbientAudioClip()
-    {
-        int randomIndex = Random.Range(0, ambientAudioClips.Length);
-        AudioSource.PlayClipAtPoint(ambientAudioClips[randomIndex], transform.position);
-    }
-
-    void PlayRandomWalkingAudioClip()
-    {
-        int randomIndex = Random.Range(0, walkingAudioClips.Length);
-        AudioSource.PlayClipAtPoint(walkingAudioClips[randomIndex], transform.position);
     }
 
     void RotateToFollowSurfaceNormal()
@@ -148,14 +160,37 @@ public class WanderingCreatureController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, -transform.up, out hit, surfaceNormalRaycastDistance))
         {
-            transform.up = hit.normal;
+            // Get the target rotation based on the surface normal
+            Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+            // Preserve the y-rotation of the current rotation
+            Vector3 euler = transform.rotation.eulerAngles;
+            targetRotation.eulerAngles = new Vector3(euler.x, transform.eulerAngles.y, euler.z);
+
+            // Set the rotation directly to the target rotation
+            transform.rotation = targetRotation;
         }
     }
 
     void OnDrawGizmosSelected()
     {
         // Draw the wander radius gizmo
-        Gizmos.color = Color.blue;
+        Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, wanderRadius);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void GenerateDestinationServerRpc()
+    {
+        GenerateDestination();
+        // Inform clients about the change in position and start moving
+        GenerateDestinationClientRpc();
+    }
+
+    [ClientRpc]
+    void GenerateDestinationClientRpc()
+    {
+        // Start moving on clients
+        isMoving = true;
     }
 }
