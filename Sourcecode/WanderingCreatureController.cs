@@ -24,11 +24,17 @@ public class WanderingCreatureController : NetworkBehaviour
     public float minAmbientAudioInterval = 3f;
     [Tooltip("The maximum interval between playing ambient audio clips.")]
     public float maxAmbientAudioInterval = 7f;
+    [Tooltip("The volume for ambient audio.")]
+    [Range(0f, 1f)]
+    public float ambientAudioVolume = 1f;
     [Space]
     [Tooltip("An array of audio clips that can be played randomly at intervals while the creature is moving.")]
     public AudioClip[] walkingAudioClips;
     [Tooltip("The interval between playing walking audio clips.")]
     public float walkingAudioInterval = 0.5f;
+    [Tooltip("The volume for walking audio.")]
+    [Range(0f, 1f)]
+    public float walkingAudioVolume = 1f;
 
     [Header("Rotation")]
     [Tooltip("If enabled, the creature will follow the surface normal underneath it.")]
@@ -42,9 +48,15 @@ public class WanderingCreatureController : NetworkBehaviour
     private float waitTimer = 0f;
     private float ambientAudioTimer = 0f;
     private float walkingAudioTimer = 0f;
+    private int currentAmbientClipIndex;
+    private Vector3 startPosition;
+    private float lastSyncedAmbientAudioTimer = 0f;
+    private float syncedWaitTimer = 0f;
 
     void Start()
     {
+        startPosition = transform.position;
+
         agent = GetComponent<NavMeshAgent>();
 
         if (IsServer)
@@ -75,6 +87,11 @@ public class WanderingCreatureController : NetworkBehaviour
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
                     isMoving = false;
+
+                    // Synchronize wait timer with clients
+                    syncedWaitTimer = waitTimer;
+                    WaitTimerSyncServerRpc(waitTimer);
+
                     if (randomTime)
                     {
                         waitTimer = Random.Range(0, waitTime);
@@ -106,13 +123,29 @@ public class WanderingCreatureController : NetworkBehaviour
         // Ambient audio logic
         if (ambientAudioClips != null && ambientAudioClips.Length > 0)
         {
-            ambientAudioTimer -= Time.deltaTime;
+            // Only the server should handle the ambient audio timer
+            if (IsServer)
+            {
+                ambientAudioTimer -= Time.deltaTime;
+
+                // Check if it's time to synchronize the timer with clients
+                if (ambientAudioTimer <= 0f)
+                {
+                    ambientAudioTimer = Random.Range(minAmbientAudioInterval, maxAmbientAudioInterval);
+                    lastSyncedAmbientAudioTimer = ambientAudioTimer;
+                    AmbientAudioTimerSyncServerRpc(ambientAudioTimer);
+                }
+            }
+            else
+            {
+                // On clients, use the last synchronized value
+                ambientAudioTimer = lastSyncedAmbientAudioTimer;
+            }
+
+            // Check if it's time to play ambient audio
             if (ambientAudioTimer <= 0f)
             {
-                int randomIndex = Random.Range(0, ambientAudioClips.Length);
-                AudioSource.PlayClipAtPoint(ambientAudioClips[randomIndex], transform.position);
-
-                ambientAudioTimer = Random.Range(minAmbientAudioInterval, maxAmbientAudioInterval);
+                SelectAmbientAudioClipServerRpc();
             }
         }
 
@@ -123,7 +156,7 @@ public class WanderingCreatureController : NetworkBehaviour
             if (walkingAudioTimer <= 0f)
             {
                 int randomIndex = Random.Range(0, walkingAudioClips.Length);
-                AudioSource.PlayClipAtPoint(walkingAudioClips[randomIndex], transform.position);
+                AudioSource.PlayClipAtPoint(walkingAudioClips[randomIndex], transform.position, walkingAudioVolume);
 
                 walkingAudioTimer = walkingAudioInterval;
             }
@@ -143,7 +176,7 @@ public class WanderingCreatureController : NetworkBehaviour
 
         if (anchoredWandering)
         {
-            randomDirection += transform.position;
+            randomDirection += startPosition;
         }
 
         NavMeshHit hit;
@@ -192,5 +225,45 @@ public class WanderingCreatureController : NetworkBehaviour
     {
         // Start moving on clients
         isMoving = true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void SelectAmbientAudioClipServerRpc()
+    {
+        currentAmbientClipIndex = Random.Range(0, ambientAudioClips.Length);
+        SelectAmbientAudioClipClientRpc(currentAmbientClipIndex);
+    }
+
+    [ClientRpc]
+    void SelectAmbientAudioClipClientRpc(int clipIndex)
+    {
+        currentAmbientClipIndex = clipIndex;
+        AudioSource.PlayClipAtPoint(ambientAudioClips[currentAmbientClipIndex], transform.position, ambientAudioVolume);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void AmbientAudioTimerSyncServerRpc(float timerValue)
+    {
+        lastSyncedAmbientAudioTimer = timerValue;
+        AmbientAudioTimerSyncClientRpc(timerValue);
+    }
+
+    [ClientRpc]
+    void AmbientAudioTimerSyncClientRpc(float timerValue)
+    {
+        lastSyncedAmbientAudioTimer = timerValue;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void WaitTimerSyncServerRpc(float timerValue)
+    {
+        syncedWaitTimer = timerValue;
+        WaitTimerSyncClientRpc(timerValue);
+    }
+
+    [ClientRpc]
+    void WaitTimerSyncClientRpc(float timerValue)
+    {
+        syncedWaitTimer = timerValue;
     }
 }
