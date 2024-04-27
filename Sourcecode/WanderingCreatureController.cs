@@ -18,6 +18,7 @@ public class WanderingCreatureController : NetworkBehaviour
     public bool anchoredWandering = true;
 
     [Header("Audio")]
+    public AudioSource ambientAudioSource;
     [Tooltip("An array of audio clips that can be played randomly at intervals while the creature is wandering.")]
     public AudioClip[] ambientAudioClips;
     [Tooltip("The minimum interval between playing ambient audio clips.")]
@@ -25,22 +26,23 @@ public class WanderingCreatureController : NetworkBehaviour
     [Tooltip("The maximum interval between playing ambient audio clips.")]
     public float maxAmbientAudioInterval = 7f;
     [Tooltip("The volume for ambient audio.")]
-    [Range(0f, 1f)]
+    [Range(0f, 2f)]
     public float ambientAudioVolume = 1f;
     [Space]
+    public AudioSource walkingAudioSource;
     [Tooltip("An array of audio clips that can be played randomly at intervals while the creature is moving.")]
     public AudioClip[] walkingAudioClips;
     [Tooltip("The interval between playing walking audio clips.")]
     public float walkingAudioInterval = 0.5f;
     [Tooltip("The volume for walking audio.")]
-    [Range(0f, 1f)]
+    [Range(0f, 2f)]
     public float walkingAudioVolume = 1f;
 
     [Header("Rotation")]
     [Tooltip("If enabled, the creature will follow the surface normal underneath it.")]
     public bool followSurface = false;
     [Tooltip("The distance to cast the ray to detect the surface normal.")]
-    public float surfaceNormalRaycastDistance = 1f;
+    public float surfaceNormalRaycastDistance = 2f;
 
     private NavMeshAgent agent;
     private bool isMoving = false;
@@ -64,6 +66,15 @@ public class WanderingCreatureController : NetworkBehaviour
             GenerateDestination();
             startMovingSignal = true; // Signal to start moving on the server
         }
+
+        if (ambientAudioSource == null || walkingAudioSource == null)
+        {
+            Debug.LogError("WaderingCreatureController: One or both AudioSource components are not assigned!");
+            return;
+        }
+
+        ambientAudioSource.volume = ambientAudioVolume;
+        walkingAudioSource.volume = walkingAudioVolume;
     }
 
     void Update()
@@ -150,13 +161,14 @@ public class WanderingCreatureController : NetworkBehaviour
         }
 
         // Walking audio logic
-        if (isMoving && walkingAudioClips != null && walkingAudioClips.Length > 0)
+        if (isMoving && walkingAudioClips != null)
         {
             walkingAudioTimer -= Time.deltaTime;
             if (walkingAudioTimer <= 0f)
             {
                 int randomIndex = Random.Range(0, walkingAudioClips.Length);
-                AudioSource.PlayClipAtPoint(walkingAudioClips[randomIndex], transform.position, walkingAudioVolume);
+                walkingAudioSource.clip = walkingAudioClips[randomIndex];
+                walkingAudioSource.Play();
 
                 walkingAudioTimer = walkingAudioInterval;
             }
@@ -191,14 +203,13 @@ public class WanderingCreatureController : NetworkBehaviour
     void RotateToFollowSurfaceNormal()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, -transform.up, out hit, surfaceNormalRaycastDistance))
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, surfaceNormalRaycastDistance))
         {
-            // Get the target rotation based on the surface normal
-            Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            // Get the surface normal
+            Vector3 surfaceNormal = hit.normal;
 
-            // Preserve the y-rotation of the current rotation
-            Vector3 euler = transform.rotation.eulerAngles;
-            targetRotation.eulerAngles = new Vector3(euler.x, transform.eulerAngles.y, euler.z);
+            // Calculate the target rotation based on the surface normal
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, surfaceNormal) * transform.rotation;
 
             // Set the rotation directly to the target rotation
             transform.rotation = targetRotation;
@@ -237,8 +248,12 @@ public class WanderingCreatureController : NetworkBehaviour
     [ClientRpc]
     void SelectAmbientAudioClipClientRpc(int clipIndex)
     {
-        currentAmbientClipIndex = clipIndex;
-        AudioSource.PlayClipAtPoint(ambientAudioClips[currentAmbientClipIndex], transform.position, ambientAudioVolume);
+        if (ambientAudioClips != null && ambientAudioClips.Length > 0)
+        {
+            currentAmbientClipIndex = clipIndex;
+            ambientAudioSource.clip = ambientAudioClips[currentAmbientClipIndex];
+            ambientAudioSource.Play();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
