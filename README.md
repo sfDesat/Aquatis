@@ -1,3 +1,7 @@
+# [!] NOTICE
+I have personally decided to step down from modding Lethal Company. Maybe I will return someday, but that is not a promise. As for this mod:  
+**_Fork with credit is allowed. Feel free to extract it into Unity and learn from how I made it_**  
+
 # Aquatis Status Report
 ![Screenshot_4](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/4.jpg "4")  
 _The beached ship (photo taken by Drone-2)_
