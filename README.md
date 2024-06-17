@@ -1,7 +1,8 @@
 ### ⚠️ Platform notice ⚠️
-This mod is available on a [different platform](https://www.curseforge.com/lethal-company/mods/aquatis). This platform will get priority over Thunderstore. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported, but wont be a priority.
+This mod is available on a [different platform](https://www.curseforge.com/lethal-company/mods/Aquatis). This platform will get priority over Thunderstore. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported, but wont be a priority.
 
 # Aquatis Status Report 🏝️
+***
 ![Screenshot_4](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/4.jpg "4")
 _The beached ship (photo taken by Drone-2)_
 
@@ -27,7 +28,10 @@ Aquatis presents a significantly less hazardous environment compared to other co
 **End of Report**
 
 ***
-_If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Aquatis/issues) or join the [discord server](https://discord.gg/lcmod) and search for **sfDesat** or click [here](https://discordapp.com/channels/1168655651455639582/1198736199297286196)._
+_If you want to give feedback or have questions, here are some options:  
+**[sfDesat discord](https://discord.gg/UVJx7F8mJY)**  
+[Github page](https://github.com/sfDesat/Aquatis/issues)  
+[Official Lethal Company discord](https://discord.gg/lcmod) in this [channel](https://discordapp.com/channels/1168655651455639582/1198736199297286196)._  
 
 **Want to support me? [Buy me a coffee ❤️](https://ko-fi.com/sfdesat)**
 ***
