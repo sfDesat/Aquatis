@@ -1,8 +1,8 @@
-## NOTICE - New Developer
-A new member has been added onto the development team, **Tolian**. He will take over development and all questions should be towards him.
+### ⚠️ Platform notice ⚠️
+This mod is available on a [different platform](https://www.curseforge.com/lethal-company/mods/celestial-tint). This platform will get priority over Thunderstore. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported, but wont be a priority.
 
-# Aquatis Status Report
-![Screenshot_4](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/4.jpg "4")  
+# Aquatis Status Report 🌴
+![Screenshot_4](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/4.jpg "4")
 _The beached ship (photo taken by Drone-2)_
 
 ## **Aquatis Scrap Retrieval Program**
@@ -31,10 +31,8 @@ Aquatis presents a significantly less hazardous environment compared to other co
 
 **End of Report**
 
-# 
+***
+_If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Aquatis/issues) or join the [discord server](https://discord.gg/lcmod) and search for **sfDesat** or click [here](https://discordapp.com/channels/1168655651455639582/1198736199297286196)._
 
-_If you want to give feedback, you can use the [github page](https://github.com/sfDesat/Aquatis/issues) or join the [discord server](https://discord.gg/lcmod) and search for `sfDesat`._
-
-**Check out other sfDesat mods [here](https://thunderstore.io/c/lethal-company/p/sfDesat/) or download my [modpacks](https://thunderstore.io/c/lethal-company/p/sfDesat/?section=modpacks).**
-#
-### Want to support me? [Buy me a coffee ❤️](https://buymeacoffee.com/toliann).
+**Want to support me? [Buy me a coffee ❤️](https://ko-fi.com/sfdesat)**
+***
