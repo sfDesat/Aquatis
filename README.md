@@ -1,5 +1,5 @@
 ### ⚠️ Platform notice ⚠️
-This mod is available on a [different platform](https://www.curseforge.com/lethal-company/mods/celestial-tint). This platform will get priority over Thunderstore. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported, but wont be a priority.
+This mod is available on a [different platform](https://www.curseforge.com/lethal-company/mods/aquatis). This platform will get priority over Thunderstore. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported, but wont be a priority.
 
 # Aquatis Status Report 🌴
 ![Screenshot_4](https://raw.githubusercontent.com/sfDesat/Aquatis/main/Screenshots/4.jpg "4")
